@@ -31,7 +31,7 @@ class ProfilePage extends StatelessWidget {
                         onPressed: () {},
                         heroTag: 'settings',
                         elevation: 0,
-                        backgroundColor: Colors.orange.shade100,
+                        backgroundColor: Color.fromRGBO(202, 219, 255, 100),
                         label: const Text("Pengaturan akun"),
                         icon: const Icon(Icons.settings),
                       ),
@@ -87,8 +87,8 @@ class _TopPortion extends StatelessWidget {
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [
-                    Color.fromARGB(255, 156, 141, 7),
-                    Color.fromARGB(255, 155, 146, 16)
+                    Color.fromRGBO(71, 129, 255, 50),
+                    Color.fromRGBO(202, 219, 255, 100)
                   ]),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(50),
