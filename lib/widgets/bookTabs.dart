@@ -1,6 +1,7 @@
 import '../screens/bookList.dart';
 import 'bookDrawer.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BookTabs extends StatelessWidget {
    @override
@@ -10,9 +11,12 @@ class BookTabs extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             bottom: const TabBar(
+              labelColor: Color.fromARGB(255, 0, 81, 255), // Warna teks tab yang aktif
+              unselectedLabelColor: Colors.grey, // Warna teks tab yang tidak aktif
+              indicatorColor: Color.fromARGB(255, 0, 81, 255), // Warna garis indikato
               tabs: [
-                Tab(text: 'To-Read', icon: Icon(Icons.list)),
-                Tab(text: 'Completed', icon: Icon(Icons.check_box)),
+                Tab(text: 'To-Read', icon: Icon(FontAwesomeIcons.book, color: Colors.blue,),),
+                Tab(text: 'Completed', icon: Icon(FontAwesomeIcons.circleCheck, color: Colors.blue)),
               ],
             ),
           ),
