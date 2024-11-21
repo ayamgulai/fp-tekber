@@ -48,7 +48,7 @@ class AboutPage extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: 'myBookmark ',
+                        text: 'myBook ',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
