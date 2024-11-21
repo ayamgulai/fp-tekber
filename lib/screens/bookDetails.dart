@@ -43,44 +43,12 @@ class _BookDetailPageState extends State<BookDetailPage> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    'by ${widget.book.author ?? "Unknown Author"}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontStyle: FontStyle.italic,
-                      color: Color(0xFF616161),
-                    ),
-                  ),
                 ],
               ),
             ),
             const SizedBox(height: 30),
-            Center(
-              child: const Text(
-                "BOOK DESCRIPTION",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const Divider(),
-            const SizedBox(height: 8),
-            _parseDescription(widget.book.description ?? "No description available."),
-            const SizedBox(height: 8),
             const Divider(),
             const SizedBox(height: 10),
-            Row(
-              children: [
-                const Icon(Icons.date_range, color: Color(0xFF3D6CD3)),
-                const SizedBox(width: 8),
-                Text(
-                  "First published ${widget.book.publicationDate ?? "Unknown"}",
-                  style: const TextStyle(fontSize: 14),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
             Row(
               children: [
                 const Icon(Icons.book, color: Color(0xFF3D6CD3)),
@@ -95,13 +63,24 @@ class _BookDetailPageState extends State<BookDetailPage> {
             ElevatedButton(
               onPressed: () {
                 _showUpdateProgressDialog(context);
-                },
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFCADBFF),
                 foregroundColor: Colors.black,
               ),
               child: const Text("Update Progress"),
-            )
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                _deleteBookProgress();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red, // Red color for delete
+                foregroundColor: Colors.white,
+              ),
+              child: const Text("Delete"),
+            ),
           ],
         ),
       ),
@@ -128,63 +107,49 @@ class _BookDetailPageState extends State<BookDetailPage> {
             ],
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                int newPagesRead = int.tryParse(controller.text) ?? 0;
-                if (newPagesRead <= widget.book.pages) {
-                  setState(() {
-                    currentPages = newPagesRead;
-                    widget.book.pageNow = newPagesRead;
-                  });
-                  Navigator.of(context).pop();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: const Text("Pages read cannot exceed total pages.")),
-                  );
-                }
-              },
-              child: const Text('Update'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    int newPagesRead = int.tryParse(controller.text) ?? 0;
+                    if (newPagesRead <= widget.book.pages) {
+                      setState(() {
+                        currentPages = newPagesRead;
+                        widget.book.pageNow = newPagesRead;
+                      });
+                      Navigator.of(context).pop();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: const Text("Pages read cannot exceed total pages.")),
+                      );
+                    }
+                  },
+                  child: const Text('Update'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancel'),
+                ),
+              ],
             ),
           ],
         );
       },
     );
   }
-}
 
-Text _parseDescription(String description) {
-  List<TextSpan> textSpans = [];
-  RegExp regExp = RegExp(r"\*\*(.*?)\*\*");
-  
-  int lastIndex = 0;
-  regExp.allMatches(description).forEach((match) {
-    if (match.start > lastIndex) {
-      textSpans.add(TextSpan(
-        text: description.substring(lastIndex, match.start),
-        style: TextStyle(fontWeight: FontWeight.normal),
-      ));
-    }
-    
-    textSpans.add(TextSpan(
-      text: match.group(1),
-      style: TextStyle(fontWeight: FontWeight.bold),
-    ));
-    
-    lastIndex = match.end;
-  });
-  
-  if (lastIndex < description.length) {
-    textSpans.add(TextSpan(
-      text: description.substring(lastIndex),
-      style: TextStyle(fontWeight: FontWeight.normal),
-    ));
+  // Function to handle deleting the book progress
+  void _deleteBookProgress() {
+    setState(() {
+      currentPages = 0; //
+      widget.book.pageNow = 0;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Book progress has been deleted.")),
+    );
   }
-
-  return Text.rich(TextSpan(children: textSpans));
 }

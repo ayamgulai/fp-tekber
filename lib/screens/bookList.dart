@@ -15,19 +15,19 @@ class BookListPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'FP Tekber',
-          style: TextStyle(color: Colors.black), // Warna teks hitam
+          style: TextStyle(color: Colors.black),
         ),
-        backgroundColor: Colors.white, // Warna AppBar putih
-        elevation: 0, // Hilangkan bayangan AppBar
-        iconTheme: const IconThemeData(color: Colors.black), // Warna ikon hitam
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
-      backgroundColor: Colors.white, // Warna latar Scaffold putih
+      backgroundColor: Colors.white,
       body: ListView.builder(
         itemCount: filteredBooks.length,
         itemBuilder: (context, index) {
           final book = filteredBooks[index];
           return Card(
-            color: const Color(0xFFCADBFF), // Warna kartu tetap sama
+            color: const Color(0xFFCADBFF),
             child: ListTile(
               title: Text(
                 book.title,
@@ -49,7 +49,7 @@ class BookListPage extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/addBook');
               },
-              backgroundColor: const Color(0xFFCADBFF), // Warna tombol tetap
+              backgroundColor: const Color(0xFFCADBFF),
               child: const Icon(Icons.add),
             ),
     );
