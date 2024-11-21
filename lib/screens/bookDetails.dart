@@ -11,12 +11,12 @@ class BookDetailPage extends StatefulWidget {
 }
 
 class _BookDetailPageState extends State<BookDetailPage> {
-  late int currentPages; // Menyimpan halaman yang telah dibaca
+  late int currentPages;
 
   @override
   void initState() {
     super.initState();
-    currentPages = widget.book.pageNow; // Menginisialisasi dengan nilai awal dari buku
+    currentPages = widget.book.pageNow;
   }
 
   @override
@@ -67,6 +67,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
             const Divider(),
             const SizedBox(height: 8),
             _parseDescription(widget.book.description ?? "No description available."),
+            const SizedBox(height: 8),
             const Divider(),
             const SizedBox(height: 10),
             Row(
@@ -103,7 +104,6 @@ class _BookDetailPageState extends State<BookDetailPage> {
     );
   }
 
-  // Fungsi untuk menampilkan pop-up untuk mengupdate progress buku
   void _showUpdateProgressDialog(BuildContext context) {
     TextEditingController controller = TextEditingController(text: currentPages.toString());
     showDialog(
@@ -129,12 +129,11 @@ class _BookDetailPageState extends State<BookDetailPage> {
                 int newPagesRead = int.tryParse(controller.text) ?? 0;
                 if (newPagesRead <= widget.book.pages) {
                   setState(() {
-                    currentPages = newPagesRead; // Update state halaman
-                    widget.book.pageNow = newPagesRead; // Update model buku
+                    currentPages = newPagesRead;
+                    widget.book.pageNow = newPagesRead;
                   });
-                  Navigator.of(context).pop(); // Menutup pop-up
+                  Navigator.of(context).pop();
                 } else {
-                  // Jika input lebih besar dari total halaman, beri peringatan
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: const Text("Pages read cannot exceed total pages.")),
                   );
@@ -144,7 +143,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Menutup pop-up tanpa perubahan
+                Navigator.of(context).pop();
               },
               child: const Text('Cancel'),
             ),
