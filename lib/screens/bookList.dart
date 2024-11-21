@@ -5,10 +5,11 @@ class BookListPage extends StatelessWidget {
   final bool isCompleted;
 
   BookListPage({required this.isCompleted});
- 
+
   @override
   Widget build(BuildContext context) {
-    final filteredBooks = books.where((book) => book.isCompleted == isCompleted).toList();
+    final filteredBooks =
+        books.where((book) => book.isCompleted == isCompleted).toList();
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Reading List'),
@@ -41,13 +42,18 @@ class BookListPage extends StatelessWidget {
                   Navigator.pushNamed(context, '/booksDetail', arguments: books);
                 },
               ),
+              subtitle: Text(books.types.toString().split('.').last),
+              onTap: () {
+                Navigator.pushNamed(context, '/booksDetail', arguments: books);
+              },
+
             ),
           );
 
         },
       ),
-      floatingActionButton: isCompleted 
-          ? null 
+      floatingActionButton: isCompleted
+          ? null
           : FloatingActionButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/addBook');
