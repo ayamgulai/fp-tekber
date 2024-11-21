@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:fp_tekber/screens/bookDetails.dart';
-import 'package:fp_tekber/screens/formAddBook.dart';
-import 'package:fp_tekber/screens/profile.dart';
+import '../screens/bookDetails.dart';
+import '../screens/formAddBook.dart';
+import '../screens/profile.dart';
 import '../models/bookModels.dart';
 import '../screens/bookList.dart';
+import '../screens/aboutUs.dart';
 
 class AppRoutes {
   static const Home = '/bookList';
   static const BookDetail = '/booksDetail';
   static const FormAddBook = '/addBook';
   static const Profile = '/profile';
+  static const About = '/aboutUs';
+  
 
 
     static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -30,6 +33,9 @@ class AppRoutes {
 
       case FormAddBook:
       return MaterialPageRoute(builder: (_) => FormAddBookPage());
+
+      case About:
+      return MaterialPageRoute(builder: (_) => AboutPage());
       default:
       return MaterialPageRoute(builder: (_) => const Scaffold(
         body: Center(child: Text('No Route defined'),),

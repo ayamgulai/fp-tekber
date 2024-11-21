@@ -36,9 +36,6 @@ class BookListPage extends StatelessWidget {
               subtitle: Text(
                 book.types.toString().split('.').last,
               ),
-              onTap: () {
-                Navigator.pushNamed(context, '/booksDetail', arguments: book);
-              },
             ),
           );
         },

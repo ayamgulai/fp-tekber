@@ -18,7 +18,13 @@ class BookDrawer extends StatelessWidget{
         onTap: () {
           Navigator.pushNamed(context, '/profile');
         },
-      )
+      ),
+      ListTile(
+        title: const Text('About Team'),
+        onTap: () {
+          Navigator.pushNamed(context, '/aboutUs');
+        },
+      ),
     ],
   ),
 );
