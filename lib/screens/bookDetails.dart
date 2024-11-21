@@ -24,7 +24,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Book Details"),
-        backgroundColor: Colors.orangeAccent,
+        backgroundColor: Color(0xFFCADBFF),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -72,7 +72,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
             const SizedBox(height: 10),
             Row(
               children: [
-                const Icon(Icons.date_range, color: Colors.grey),
+                const Icon(Icons.date_range, color: Color(0xFF3D6CD3)),
                 const SizedBox(width: 8),
                 Text(
                   "First published ${widget.book.publicationDate ?? "Unknown"}",
@@ -83,7 +83,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
             const SizedBox(height: 8),
             Row(
               children: [
-                const Icon(Icons.book, color: Colors.grey),
+                const Icon(Icons.book, color: Color(0xFF3D6CD3)),
                 const SizedBox(width: 8),
                 Text(
                   "$currentPages / ${widget.book.pages} pages",
@@ -95,9 +95,13 @@ class _BookDetailPageState extends State<BookDetailPage> {
             ElevatedButton(
               onPressed: () {
                 _showUpdateProgressDialog(context);
-              },
+                },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFCADBFF),
+                foregroundColor: Colors.black,
+              ),
               child: const Text("Update Progress"),
-            ),
+            )
           ],
         ),
       ),

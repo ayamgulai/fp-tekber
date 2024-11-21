@@ -13,21 +13,22 @@ class BookListPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('FP Tekber'),
       ),
+      backgroundColor: Colors.white,
       body: ListView.builder(
         itemCount: filteredBooks.length,
         itemBuilder: (context, index) {
-          final books = filteredBooks[index];
+          final book = filteredBooks[index];
           return Card(
-            color: Colors.orange.shade100,
+            color: const Color(0xFFCADBFF),
             child: ListTile(
               title: Text(
-                books.title,
+                book.title,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
-                books.types.toString().split('.').last),
+                book.types.toString().split('.').last),
               onTap: () {
-                Navigator.pushNamed(context, '/booksDetail', arguments: books);
+                Navigator.pushNamed(context, '/booksDetail', arguments: book);
               },
             ),
           );
@@ -39,7 +40,7 @@ class BookListPage extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/addBook');
               },
-              backgroundColor: Colors.orange,
+              backgroundColor: Color(0xFFCADBFF),
               child: const Icon(Icons.add),
             ),
     );
