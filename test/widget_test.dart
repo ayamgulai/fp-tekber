@@ -8,7 +8,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fp_tekber/screens/profile.dart';
-
 import 'package:tekber_fp/main.dart';
 
 void main() {

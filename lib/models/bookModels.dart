@@ -4,7 +4,7 @@ class Book {
   final String title;
   final Types types;
   final int pages;
-  final int pageNow;
+  int pageNow;
   final bool isCompleted;
 
   Book({
@@ -14,5 +14,9 @@ class Book {
     required this.pageNow,
     required this.isCompleted,
   });
+
+  void updatePageNow(int newPage) {
+    pageNow = newPage;
+  }
   
 }

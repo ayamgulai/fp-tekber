@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BookTabs extends StatelessWidget {
-   @override
+  @override
   Widget build(BuildContext context) {
     return DefaultTabController(
         length: 2,
