@@ -33,7 +33,7 @@ class AboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: Text('About Apps and Team'),
         backgroundColor: Color.fromRGBO(71, 129, 255, 50),
       ),
       body: Column(
@@ -56,7 +56,7 @@ class AboutPage extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: '(manage your Bookmark)',
+                        text: '(manage your Book)',
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 18,
