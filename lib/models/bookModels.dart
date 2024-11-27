@@ -5,7 +5,7 @@ class Book {
   final Types types;
   final int pages;
   int pageNow; // Optional with default value
-  final bool isCompleted;
+  bool isCompleted;
   final String? note; // Optional note
   final DateTime dateAdded;
   DateTime dateFinished;
@@ -15,7 +15,7 @@ class Book {
     required this.types,
     required this.pages,
     this.pageNow = 0, // Default value for pageNow
-    required this.isCompleted,
+    this.isCompleted = false,
     this.note, // Optional note
     required this.dateAdded,
     DateTime? dateFinished, // Optional dateFinished with default
