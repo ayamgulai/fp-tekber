@@ -7,6 +7,8 @@ final List<Book> books = [
     pages: 180,
     pageNow: 120,
     isCompleted: false,
+    dateAdded: DateTime.now(),
+    note: "A classic novel about the American Dream."
   ),
   Book(
     title: "Physics for Beginners",
@@ -14,6 +16,8 @@ final List<Book> books = [
     pages: 300,
     pageNow: 300,
     isCompleted: true,
+    dateAdded: DateTime.now(),
+    note: "Completed, covers the basics of physics."
   ),
   Book(
     title: "Flutter Development",
@@ -21,6 +25,8 @@ final List<Book> books = [
     pages: 450,
     pageNow: 230,
     isCompleted: false,
+    dateAdded: DateTime.now(),
+    note: "A guide to building apps with Flutter."
   ),
   Book(
     title: "Cooking Guide",
@@ -28,6 +34,8 @@ final List<Book> books = [
     pages: 150,
     pageNow: 150,
     isCompleted: true,
+    dateAdded: DateTime.now(),
+    note: "A handy reference for easy recipes."
   ),
   Book(
     title: "Mystery of the Old House",
@@ -35,6 +43,8 @@ final List<Book> books = [
     pages: 220,
     pageNow: 50,
     isCompleted: false,
+    dateAdded: DateTime.now(),
+    note: "An intriguing mystery novel."
   ),
   Book(
     title: "Biology 101",
@@ -42,6 +52,8 @@ final List<Book> books = [
     pages: 350,
     pageNow: 320,
     isCompleted: false,
+    dateAdded: DateTime.now(),
+    note: "Basic concepts of biology for beginners."
   ),
   Book(
     title: "Advanced Math",
@@ -49,6 +61,8 @@ final List<Book> books = [
     pages: 500,
     pageNow: 500,
     isCompleted: true,
+    dateAdded: DateTime.now(),
+    note: "A comprehensive guide to advanced math."
   ),
   Book(
     title: "Gardening Tips",
@@ -56,6 +70,8 @@ final List<Book> books = [
     pages: 90,
     pageNow: 20,
     isCompleted: false,
+    dateAdded: DateTime.now(),
+    note: "Tips and tricks for successful gardening."
   ),
   Book(
     title: "Romantic Novel",
@@ -63,6 +79,8 @@ final List<Book> books = [
     pages: 250,
     pageNow: 250,
     isCompleted: true,
+    dateAdded: DateTime.now(),
+    note: "A touching romantic story."
   ),
   Book(
     title: "Introduction to Chemistry",
@@ -70,5 +88,7 @@ final List<Book> books = [
     pages: 280,
     pageNow: 100,
     isCompleted: false,
+    dateAdded: DateTime.now(),
+    note: "An introductory text for chemistry students."
   ),
 ];
