@@ -27,14 +27,11 @@ class ProfilePage extends StatelessWidget {
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromRGBO(200, 230, 255, 100),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                      foregroundColor: Colors.black,
+                      minimumSize: const Size(double.infinity, 50),
                     ),
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
                         Icon(Icons.person_2_rounded,
                             size: 24, color: Colors.black),
@@ -44,21 +41,32 @@ class ProfilePage extends StatelessWidget {
                       ],
                     ),
                   ),
+
+                  //Delete
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FloatingActionButton.extended(
-                        onPressed: () {},
-                        heroTag: 'logout',
-                        elevation: 0,
-                        backgroundColor: Colors.white,
-                        label: const Text("Log Out",
-                            style: TextStyle(color: Colors.red)),
-                        icon:
-                            const Icon(Icons.login_outlined, color: Colors.red),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.red,
+                      minimumSize: const Size(double.infinity, 50),
+                      side: const BorderSide(
+                        color: Colors.red,
+                        width: 0.5,
                       ),
-                    ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(
+                          Icons.logout,
+                          color: Colors.red,
+                          size: 20,
+                        ),
+                        SizedBox(width: 8),
+                        Text("Keluar Akun"),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 16),
                 ],
