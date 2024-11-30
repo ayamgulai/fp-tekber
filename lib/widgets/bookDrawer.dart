@@ -9,7 +9,7 @@ class BookDrawer extends StatelessWidget {
         children: <Widget>[
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: const Color(0xFFF0F4FF),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -17,7 +17,7 @@ class BookDrawer extends StatelessWidget {
                 Text(
                   'Book Tabs',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontSize: 24,
                   ),
                 ),

@@ -25,7 +25,7 @@ class _BookTabsState extends State<BookTabs> {
         toolbarHeight: 120.0, // Tinggi AppBar untuk menyesuaikan dengan gaya sebelumnya
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-            color: Colors.blue, // Warna latar belakang yang sama
+            color: Color(0xFFF0F4FF), // Warna latar belakang yang sama
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
           alignment: Alignment.bottomLeft, // Untuk menempatkan teks di kiri bawah
@@ -34,7 +34,7 @@ class _BookTabsState extends State<BookTabs> {
             style: TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
         ),
