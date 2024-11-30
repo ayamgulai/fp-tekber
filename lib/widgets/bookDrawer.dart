@@ -28,14 +28,14 @@ class BookDrawer extends StatelessWidget {
             leading: Icon(Icons.home),
             title: Text('Home'),
             onTap: () {
-              // Handle Home tap
+              Navigator.pushNamed(context, '/bookList');
             },
           ),
           ListTile(
             leading: Icon(Icons.book),
-            title: Text('Library'),
+            title: Text('Profile'),
             onTap: () {
-              // Handle Library tap
+              Navigator.pushNamed(context, '/profile');
             },
           ),
           // Add more list tiles as needed
