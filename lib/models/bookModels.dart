@@ -1,4 +1,4 @@
-enum Types {novel, education, references, other}
+enum Types { novel, education, references, other }
 
 class Book {
   final String title;
@@ -7,7 +7,7 @@ class Book {
   int pageNow; // Optional with default value
   bool isCompleted;
   final String? note; // Optional note
-  final DateTime dateAdded;
+  final DateTime dateAdded; // Automatically set to today's date
   DateTime dateFinished;
 
   Book({
@@ -15,15 +15,14 @@ class Book {
     required this.types,
     required this.pages,
     this.pageNow = 0, // Default value for pageNow
-    this.isCompleted = false,
+    this.isCompleted = false, // Default to false
     this.note, // Optional note
-    required this.dateAdded,
+    DateTime? dateAdded, // Optional, auto-filled with today's date
     DateTime? dateFinished, // Optional dateFinished with default
-  }) : dateFinished = dateFinished ?? DateTime(9999, 12, 31); // Default dateFinished
-
+  })  : dateAdded = dateAdded ?? DateTime.now(), // Default to current date
+        dateFinished = dateFinished ?? DateTime(9999, 12, 31); // Default dateFinished
 
   void updatePageNow(int newPage) {
     pageNow = newPage;
   }
-  
 }
