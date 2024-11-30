@@ -5,37 +5,44 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profil'),
+        backgroundColor: Color.fromRGBO(245, 250, 253, 100),
       ),
       body: Column(
         children: [
-          const Expanded(flex: 2, child: _TopPortion()),
+          const Expanded(flex: 1, child: _TopPortion()),
           Expanded(
-            flex: 3,
+            flex: 5,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Text(
-                    "Lorem Ipsum",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FloatingActionButton.extended(
-                        onPressed: () {},
-                        heroTag: 'settings',
-                        elevation: 0,
-                        backgroundColor: Color.fromRGBO(202, 219, 255, 100),
-                        label: const Text("Pengaturan akun"),
-                        icon: const Icon(Icons.settings),
+                  Text("Lorem Ipsum",
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.w400)),
+                  Text("kuliahdsi@gmail.com",
+                      style:
+                          TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
+                  const SizedBox(height: 32),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromRGBO(200, 230, 255, 100),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    ],
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(Icons.person_2_rounded,
+                            size: 24, color: Colors.black),
+                        Text("Edit Profile",
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 16)),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -45,9 +52,11 @@ class ProfilePage extends StatelessWidget {
                         onPressed: () {},
                         heroTag: 'logout',
                         elevation: 0,
-                        backgroundColor: Colors.red,
-                        label: const Text("Keluar akun"),
-                        icon: const Icon(Icons.login_outlined),
+                        backgroundColor: Colors.white,
+                        label: const Text("Log Out",
+                            style: TextStyle(color: Colors.red)),
+                        icon:
+                            const Icon(Icons.login_outlined, color: Colors.red),
                       ),
                     ],
                   ),
@@ -80,26 +89,10 @@ class _TopPortion extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Container(
-          margin: const EdgeInsets.only(bottom: 50),
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Color.fromRGBO(71, 129, 255, 50),
-                    Color.fromRGBO(202, 219, 255, 100)
-                  ]),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(50),
-                bottomRight: Radius.circular(50),
-              )),
-        ),
         Align(
-          alignment: Alignment.bottomCenter,
           child: SizedBox(
-            width: 150,
-            height: 150,
+            width: 120,
+            height: 120,
             child: Stack(
               fit: StackFit.expand,
               children: [
