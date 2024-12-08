@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/bookModels.dart';
+import '../service/firestore.dart'; // Import FirestoreService
+
 class FormAddBookPage extends StatefulWidget {
   @override
   _AddBookPageState createState() => _AddBookPageState();
@@ -7,6 +9,7 @@ class FormAddBookPage extends StatefulWidget {
 
 class _AddBookPageState extends State<FormAddBookPage> {
   final _formKey = GlobalKey<FormState>();
+  final FirestoreService _firestoreService = FirestoreService(); // Instance of FirestoreService
 
   // Form field variables
   String? _title;
@@ -28,31 +31,41 @@ class _AddBookPageState extends State<FormAddBookPage> {
     }
   }
 
-  void _addBook() {
+  // Add book and save to Firestore
+  void _addBook() async {
     if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save(); // Save form inputs
+      _formKey.currentState!.save();
 
-      // Create a Book instance
-      final newBook = Book(
-        title: _title!,
-        types: _selectedType!,
-        pages: _pages!,
-        note: _note,
-      );
+      // Call the FirestoreService to save the book
+      try {
+        await _firestoreService.createBook(
+          _title!,
+          _selectedType!,
+          _pages!,
+          _note ?? '',
+          DateTime.now(),
+        );
 
-      // Example: Show the new book's details in the SnackBar
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-              'Book Added: ${newBook.title}, Type: ${_enumToString(newBook.types)}, Pages: ${newBook.pages}'),
-        ),
-      );
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Book Added: $_title'),
+          ),
+        );
 
-      // Reset the form or navigate if needed
-      _formKey.currentState!.reset();
-      setState(() {
-        _selectedType = null;
-      });
+        // Reset the form
+        _formKey.currentState!.reset();
+        setState(() {
+          _selectedType = null;
+        });
+      } catch (e) {
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to add book: $e'),
+          ),
+        );
+      }
     }
   }
 
@@ -60,11 +73,12 @@ class _AddBookPageState extends State<FormAddBookPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Book', 
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Color.fromARGB(255, 29, 48, 80),
-        ),
+        title: const Text(
+          'Add Book',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color.fromARGB(255, 29, 48, 80),
+          ),
         ),
         backgroundColor: const Color(0xFFF0F4FF),
       ),
@@ -155,15 +169,15 @@ class _AddBookPageState extends State<FormAddBookPage> {
               // Add Book Button
               Center(
                 child: SizedBox(
-                  width: double.infinity, // Makes the button take the full width available
+                  width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: _addBook,
                     icon: const Icon(Icons.add),
                     label: const Text('Add Book'),
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.black, backgroundColor: Colors.lightBlue[100], padding: const EdgeInsets.symmetric(
-                        vertical: 16.0, // Keep vertical padding
-                      ), // Text/icon color
+                      foregroundColor: Colors.black,
+                      backgroundColor: Colors.lightBlue[100],
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
                   ),
                 ),
