@@ -1,11 +1,48 @@
 import 'package:flutter/material.dart';
+import 'formEditProfile.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  // Data default untuk nama dan email
+  String _name = "Lorem Ipsum";
+  String _email = "kuliahdsi@gmail.com";
+
+  // Method untuk navigasi ke halaman edit profile
+  Future<void> _editProfile(BuildContext context) async {
+    final updatedProfile = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FormEditProfilePage(
+          name: _name,
+          email: _email,
+        ),
+      ),
+    );
+
+    // Cek apakah ada data baru setelah edit
+    if (updatedProfile != null && updatedProfile is Map<String, String>) {
+      setState(() {
+        _name = updatedProfile['name']!;
+        _email = updatedProfile['email']!;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(245, 250, 253, 100),
+        backgroundColor: const Color.fromRGBO(245, 250, 253, 100),
+        title: const Text(
+          'Profile Page',
+          style: TextStyle(color: Colors.black),
+        ),
+        elevation: 0,
+        leading: const BackButton(color: Colors.black),
       ),
       body: Column(
         children: [
@@ -16,36 +53,52 @@ class ProfilePage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Text("Lorem Ipsum",
-                      style:
-                          TextStyle(fontSize: 28, fontWeight: FontWeight.w400)),
-                  Text("kuliahdsi@gmail.com",
-                      style:
-                          TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
+                  Text(
+                    _name,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  Text(
+                    _email,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                   const SizedBox(height: 32),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => _editProfile(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromRGBO(200, 230, 255, 100),
+                      backgroundColor: const Color.fromRGBO(200, 230, 255, 100),
                       foregroundColor: Colors.black,
                       minimumSize: const Size(double.infinity, 50),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
-                        Icon(Icons.person_2_rounded,
-                            size: 24, color: Colors.black),
-                        Text("Edit Profile",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16)),
+                        Icon(
+                          Icons.person_2_rounded,
+                          size: 24,
+                          color: Colors.black,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          "Edit Profile",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-
-                  //Delete
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      // Logout functionality here
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.red,
@@ -79,16 +132,6 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
-extension on TextTheme {
-  get headline6 => null;
-}
-
-class ProfileInfoItem {
-  final String title;
-  final int value;
-  const ProfileInfoItem(this.title, this.value);
-}
-
 class _TopPortion extends StatelessWidget {
   const _TopPortion({Key? key}) : super(key: key);
 
@@ -101,23 +144,19 @@ class _TopPortion extends StatelessWidget {
           child: SizedBox(
             width: 120,
             height: 120,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.black,
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                            'https://assets-a1.kompasiana.com/items/album/2017/05/17/monkey-591c28d0129773a859f96ce3.jpg?t=o&v=410')),
-                  ),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
+                      'https://assets-a1.kompasiana.com/items/album/2017/05/17/monkey-591c28d0129773a859f96ce3.jpg?t=o&v=410'),
                 ),
-              ],
+              ),
             ),
           ),
-        )
+        ),
       ],
     );
   }
