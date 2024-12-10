@@ -1,6 +1,7 @@
 enum Types { novel, education, references, other }
 
 class Book {
+//  final String id;
   final String title;
   final Types types;
   final int pages;
@@ -11,6 +12,7 @@ class Book {
   DateTime dateFinished;
 
   Book({
+ //   required this.id,
     required this.title,
     required this.types,
     required this.pages,

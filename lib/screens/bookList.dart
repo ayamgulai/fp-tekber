@@ -1,32 +1,44 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../data/bookData.dart';
+import 'package:fp_tekber/service/firestore.dart';
+// import '../data/bookData.dart';
 
 class BookListPage extends StatelessWidget {
   final bool? isCompleted; // Null jika dipanggil dari Home
 
   BookListPage({this.isCompleted});
-
+  final FirestoreService _firestoreService = FirestoreService();
   @override
   Widget build(BuildContext context) {
-    // Filter buku berdasarkan status
+      return Scaffold(
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _firestoreService.getBooks(),
+        builder: (context, snapshot){
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('Tidak ada buku.'));
+          }
+          final books = snapshot.data!.docs;
+              // Filter buku berdasarkan status
     final filteredBooks = isCompleted == null
         ? books // Untuk Home, tampilkan semua buku
-        : books.where((book) => book.isCompleted == isCompleted).toList();
+        : books.where((book) => book['isCompleted'] == isCompleted).toList();
 
     // Logika untuk Home
     if (isCompleted == null) {
       // Tetap gunakan tampilan kombinasi GridView dan ListView di Home
       final readingBooks = books
-          .where((book) => book.isCompleted == false)
+          .where((book) => book['isCompleted'] == false)
           .take(3)
           .toList();
       final completedBooks = books
-          .where((book) => book.isCompleted == true)
+          .where((book) => book['isCompleted'] == true)
           .take(3)
           .toList();
-
-      return Scaffold(
-  body: CustomScrollView(
+    
+  return CustomScrollView(
     slivers: [
       // Bagian "Currently Reading"
      
@@ -45,7 +57,7 @@ class BookListPage extends StatelessWidget {
           itemBuilder: (context, index) {
             if (index < readingBooks.length) {
               final book = readingBooks[index];
-              final progress = book.pageNow / book.pages;
+              final progress = book['pageNow'] / book['pages'];
 
               return GestureDetector(
                 onTap: () {
@@ -64,7 +76,7 @@ class BookListPage extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            book.title,
+                            book['title'],
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16.0,
@@ -75,7 +87,7 @@ class BookListPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 8.0),
                         Text(
-                          book.types.toString().split('.').last,
+                          book['types'].toString().split('.').last,
                           style: const TextStyle(color: Colors.grey),
                         ),
                         const SizedBox(height: 8.0),
@@ -193,10 +205,10 @@ class BookListPage extends StatelessWidget {
                   ),
                   child: ListTile(
                     title: Text(
-                      book.title,
+                      book['title'],
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text(book.types.toString().split('.').last),
+                    subtitle: Text(book['types'].toString().split('.').last),
                     onTap: () {
                       Navigator.pushNamed(context, '/booksDetail', arguments: book);
                     },
@@ -204,7 +216,6 @@ class BookListPage extends StatelessWidget {
                 ),
               );
             }
-            return null;
           },
           childCount: completedBooks.length,
         ),
@@ -245,10 +256,10 @@ class BookListPage extends StatelessWidget {
         ),
       ),
     ],
-  ),
-);
+  );
+    };
 
-    }
+      
 
     // Tampilan untuk "Currently Reading" atau "Completed"
     return Scaffold(
@@ -300,17 +311,17 @@ class BookListPage extends StatelessWidget {
           ),
           child: ListTile(
             title: Text(
-              book.title,
+              book['title'],
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(book.types.toString().split('.').last),
+                Text(book['types'].toString().split('.').last),
                 const SizedBox(height: 8.0),
-                if (!book.isCompleted)
+                if (!book['isCompleted'])
                   LinearProgressIndicator(
-                    value: book.pageNow / book.pages,
+                    value: book['pageNow'] / book['pages'],
                     minHeight: 4.0,
                     color: const Color.fromARGB(255, 58, 88, 78),
                     backgroundColor: const Color.fromARGB(255, 186, 186, 186),
@@ -325,9 +336,11 @@ class BookListPage extends StatelessWidget {
       );
     },
   ),
+
 );
+        },
+      ),
 
-
-
+      );
   }
 }

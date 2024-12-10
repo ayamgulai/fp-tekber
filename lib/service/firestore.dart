@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/bookModels.dart';
 
 class FirestoreService {
-
+  
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference books = FirebaseFirestore.instance.collection('book');
 
   // CREATE
