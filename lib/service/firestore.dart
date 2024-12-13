@@ -29,9 +29,27 @@ class FirestoreService {
   }
 
   // READ
-  Stream<QuerySnapshot> getBooks() {
-    return books.orderBy('dateAdded', descending: true).snapshots();
+  Stream<List<Book>> getBooks() {
+    return books // Nama koleksi di Firestore
+        .snapshots() // Stream<QuerySnapshot>
+        .map((querySnapshot) {
+          return querySnapshot.docs.map((doc) {
+            final data = doc.data() as Map<String, dynamic>; // Ambil data dari dokumen
+
+            return Book(
+              title: data['title'],
+              types: Types.values.firstWhere((e) => e.toString() == 'Types.${data['types']}'),
+              pages: data['pages'],
+              pageNow: data['pageNow'] ?? 0,
+              isCompleted: data['isCompleted'] ?? false,
+              note: data['note'],
+              dateAdded: (data['dateAdded'] as Timestamp).toDate(),
+              dateFinished: (data['dateFinished'] as Timestamp).toDate(),
+            );
+          }).toList();
+        });
   }
+
 
   // UPDATE
   Future<void> updateProgress(
