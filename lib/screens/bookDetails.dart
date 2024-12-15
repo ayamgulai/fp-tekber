@@ -1,39 +1,56 @@
 import 'package:flutter/material.dart';
 import '../models/bookModels.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BookDetailPage extends StatefulWidget {
   final Book book;
+  final List<Book> bookList;
 
-  BookDetailPage({required this.book});
+  BookDetailPage({
+    required this.book,
+    required this.bookList,
+  });
 
   @override
   _BookDetailPageState createState() => _BookDetailPageState();
 }
 
 class _BookDetailPageState extends State<BookDetailPage> {
+  _BookDetailPageState();
   late int currentPages;
+  bool isUpdated = false;
+  late int tempCurrentPages = 0;
+  late TextEditingController _pageController;
+  bool isCompleted = false;
+  late List<Book> bookList;
 
   @override
   void initState() {
     super.initState();
     currentPages = widget.book.pageNow;
+    tempCurrentPages = currentPages;
+    _pageController = TextEditingController(text: tempCurrentPages.toString());
+    bookList = widget.bookList;
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isCompleted = currentPages >= widget.book.pages;
+    bool isCompleted = currentPages >= widget.book.pages;  // Pastikan ini di sini untuk menentukan status selesai atau belum
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(isCompleted ? "Completed Book" : "Book Details"),
-        backgroundColor: const Color(0xFFF0F4FF),
-        elevation: 0,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: isCompleted
-            ? _buildCompletedBookView()
-            : _buildInProgressBookView(),
+    return ScaffoldWithWillPop(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(isCompleted ? "Completed Book" : "Book Details"),
+          backgroundColor: const Color(0xFFF0F4FF),
+          elevation: 0,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: isCompleted
+              ? _buildCompletedBookView()
+              : _buildInProgressBookView(),
+        ),
       ),
     );
   }
@@ -232,10 +249,10 @@ class _BookDetailPageState extends State<BookDetailPage> {
                   // Minus Button
                   IconButton(
                     onPressed: () {
-                      if (currentPages > 0) {
+                      if (tempCurrentPages > 0) {
                         setState(() {
-                          currentPages--;
-                          widget.book.pageNow = currentPages;
+                          tempCurrentPages--;
+                          _pageController.text = tempCurrentPages.toString();
                         });
                       }
                     },
@@ -245,25 +262,36 @@ class _BookDetailPageState extends State<BookDetailPage> {
                   ),
 
                   // Progress Count
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Text(
-                      "$currentPages/${widget.book.pages}",
+                  SizedBox(
+                    width: 100,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 48,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF00476A),
                       ),
+                      controller: _pageController,
+                      onSubmitted: (value) {
+                        setState(() {
+                          int? newValue = int.tryParse(value);
+                          if (newValue != null && newValue >= 0 && newValue <= widget.book.pages) {
+                            tempCurrentPages = newValue;
+                            _pageController.text = tempCurrentPages.toString(); // update controller
+                          }
+                        });
+                      },
                     ),
                   ),
 
                   // Plus Button
                   IconButton(
                     onPressed: () {
-                      if (currentPages < widget.book.pages) {
+                      if (tempCurrentPages < widget.book.pages) {
                         setState(() {
-                          currentPages++;
-                          widget.book.pageNow = currentPages;
+                          tempCurrentPages++;
+                          _pageController.text = tempCurrentPages.toString();
                         });
                       }
                     },
@@ -273,7 +301,18 @@ class _BookDetailPageState extends State<BookDetailPage> {
                   ),
                 ],
               ),
+              const SizedBox(height: 20),
+              // Page Count
+                Text(
+                  "$currentPages/${widget.book.pages}",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF00476A),
+                  ),
+                ),
               const SizedBox(height: 16),
+
               // Progress Bar
               LinearProgressIndicator(
                 value: currentPages / widget.book.pages,
@@ -285,9 +324,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
 
               // Update Button
               ElevatedButton(
-                onPressed: () {
-                  _showUpdateProgressDialog(context);
-                },
+                onPressed: _updateProgress,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFCADBFF),
                   foregroundColor: Colors.black,
@@ -302,12 +339,12 @@ class _BookDetailPageState extends State<BookDetailPage> {
                       size: 20,
                     ),
                     SizedBox(width: 8),
-                    Text("Update"),
+                    Text("Update Progress"),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
-
+              
               // Delete Button
               ElevatedButton(
                 onPressed: _deleteBookProgress,
@@ -340,48 +377,77 @@ class _BookDetailPageState extends State<BookDetailPage> {
     );
   }
 
-  void _showUpdateProgressDialog(BuildContext context) {
-    TextEditingController controller =
-        TextEditingController(text: currentPages.toString());
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Update Progress'),
-          content: TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: 'Pages Read',
-            ),
-          ),
+   void _updateProgress() {
+    setState(() {
+      widget.book.pageNow = tempCurrentPages;
+      isUpdated = true;
+      showSnackBar(context, 'Progress saved successfully.');
+    });
+
+    Future.delayed(const Duration(milliseconds: 600), () {
+      Navigator.pop(context);
+    });
+  }
+
+  Future<bool> _onWillPop() async {
+    if (!isCompleted && tempCurrentPages != currentPages) {
+      bool? exit = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Warning!'),
+          content: const Text('Unsaved changes detected. Are you sure you want to exit?'),
           actions: [
             TextButton(
-              onPressed: () {
-                int newPagesRead = int.tryParse(controller.text) ?? 0;
-                if (newPagesRead <= widget.book.pages) {
-                  setState(() {
-                    currentPages = newPagesRead;
-                    widget.book.pageNow = newPagesRead;
-                    widget.book.isCompleted = currentPages >= widget.book.pages;
-                  });
-                  Navigator.of(context).pop();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content:
-                            Text("Pages read cannot exceed total pages.")),
-                  );
-                }
-              },
-              child: const Text('Save'),
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text(
+                'Exit',
+                style: TextStyle(color: Colors.red),
+              ),
             ),
           ],
-        );
-      },
-    );
+        ),
+      );
+
+      return exit ?? false;
+    }
+    return true;
   }
 
   void _deleteBookProgress() {
+    setState(() {
+      bookList.remove(widget.book); // Menghapus buku dari daftar
+    });
+
+    Navigator.pop(context); // Menutup halaman
+    showSnackBar(context, 'Book deleted from your list.');
+  }
+
+  void showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+}
+
+class ScaffoldWithWillPop extends StatelessWidget {
+  final Future<bool> Function() onWillPop;
+  final Widget child;
+
+  const ScaffoldWithWillPop({
+    Key? key,
+    required this.onWillPop,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: child,
+    );
   }
 }
