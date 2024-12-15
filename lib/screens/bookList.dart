@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fp_tekber/models/bookModels.dart';
 import 'package:fp_tekber/service/firestore.dart';
+import 'package:fp_tekber/screens/bookDetails.dart';
 // import '../data/bookData.dart';
 
 class BookListPage extends StatelessWidget {
@@ -63,7 +64,15 @@ class BookListPage extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, '/booksDetail', arguments: book);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BookDetailPage(
+                        book: book, // Buku yang akan ditampilkan
+                        bookList: books, // Kirim daftar buku
+                      ),
+                    ),
+                  );
                 },
                 child: Card(
                   color: const Color.fromARGB(255, 242, 249, 255),
@@ -331,7 +340,15 @@ class BookListPage extends StatelessWidget {
               ],
             ),
             onTap: () {
-              Navigator.pushNamed(context, '/booksDetail', arguments: book);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BookDetailPage(
+                    book: book, // Buku yang akan ditampilkan
+                    bookList: books, // Kirim daftar buku
+                  ),
+                ),
+              );
             },
           ),
         ),

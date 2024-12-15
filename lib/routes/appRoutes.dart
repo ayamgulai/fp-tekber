@@ -25,8 +25,8 @@ class AppRoutes {
 
       case BookDetail:
       final book = settings.arguments as Book;
-      return MaterialPageRoute(builder: (_) => BookDetailPage(book: book)
-      );
+      final bookList = settings.arguments as List<Book>; // Assuming you have bookList in the arguments
+      return MaterialPageRoute(builder: (_) => BookDetailPage(book: book, bookList: bookList));
 
       case Profile:
       return MaterialPageRoute(builder: (_) => ProfilePage());

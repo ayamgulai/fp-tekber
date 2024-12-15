@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
 import '../models/bookModels.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BookDetailPage extends StatefulWidget {
   final Book book;
+  final List<Book> bookList;
 
-  BookDetailPage({required this.book});
+  BookDetailPage({
+    required this.book,
+    required this.bookList,
+  });
 
   @override
   _BookDetailPageState createState() => _BookDetailPageState();
 }
 
 class _BookDetailPageState extends State<BookDetailPage> {
+  _BookDetailPageState();
   late int currentPages;
   bool isUpdated = false;
   late int tempCurrentPages = 0;
   late TextEditingController _pageController;
   bool isCompleted = false;
+  late List<Book> bookList;
 
   @override
   void initState() {
@@ -23,6 +30,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
     currentPages = widget.book.pageNow;
     tempCurrentPages = currentPages;
     _pageController = TextEditingController(text: tempCurrentPages.toString());
+    bookList = widget.bookList;
   }
 
   @override
@@ -369,13 +377,11 @@ class _BookDetailPageState extends State<BookDetailPage> {
     );
   }
 
-  void _updateProgress() {
+   void _updateProgress() {
     setState(() {
       widget.book.pageNow = tempCurrentPages;
       isUpdated = true;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Progress saved successfully.')),
-      );
+      showSnackBar(context, 'Progress saved successfully.');
     });
 
     Future.delayed(const Duration(milliseconds: 600), () {
@@ -412,6 +418,18 @@ class _BookDetailPageState extends State<BookDetailPage> {
   }
 
   void _deleteBookProgress() {
+    setState(() {
+      bookList.remove(widget.book); // Menghapus buku dari daftar
+    });
+
+    Navigator.pop(context); // Menutup halaman
+    showSnackBar(context, 'Book deleted from your list.');
+  }
+
+  void showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 }
 
