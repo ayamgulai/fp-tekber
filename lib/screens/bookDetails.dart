@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fp_tekber/service/firestore.dart';
 import '../models/bookModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -16,6 +17,7 @@ class BookDetailPage extends StatefulWidget {
 }
 
 class _BookDetailPageState extends State<BookDetailPage> {
+  final FirestoreService _firestoreService = FirestoreService();
   _BookDetailPageState();
   late int currentPages;
   bool isUpdated = false;
@@ -377,20 +379,41 @@ class _BookDetailPageState extends State<BookDetailPage> {
     );
   }
 
-   void _updateProgress() {
-    setState(() {
-      widget.book.pageNow = tempCurrentPages;
-      isUpdated = true;
-      showSnackBar(context, 'Progress saved successfully.');
-    });
+  void _updateProgress() async {
+    final newPages = int.parse(_pageController.text);
+    if (newPages != currentPages) {
+      try {
+        // Panggil FirestoreService untuk update progress
+        await _firestoreService.updateProgress(
+          widget.book.id, // ID buku
+          newPages, // Halaman sekarang
+          widget.book.pages, // Total halaman
+        );
 
-    Future.delayed(const Duration(milliseconds: 600), () {
-      Navigator.pop(context);
-    });
+        // Perbarui state setelah berhasil update
+        setState(() {
+          currentPages = newPages;
+          widget.book.pageNow = newPages;
+          widget.book.isCompleted = newPages >= widget.book.pages;
+          showSnackBar(context, 'Progress updated successfully.');
+        });
+
+        // Navigasi keluar jika buku sudah selesai
+        if (widget.book.isCompleted) {
+          Future.delayed(const Duration(milliseconds: 600), () {
+            Navigator.pop(context);
+          });
+        }
+      } catch (e) {
+        // Tangani error
+        showSnackBar(context, 'Failed to update progress: $e');
+      }
+    }
   }
 
   Future<bool> _onWillPop() async {
-    if (!isCompleted && tempCurrentPages != currentPages) {
+    final newPages = int.parse(_pageController.text);
+    if (!isCompleted && newPages != currentPages) {
       bool? exit = await showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -417,13 +440,44 @@ class _BookDetailPageState extends State<BookDetailPage> {
     return true;
   }
 
-  void _deleteBookProgress() {
-    setState(() {
-      bookList.remove(widget.book); // Menghapus buku dari daftar
-    });
+  void _deleteBookProgress() async{
+      bool? confirmDelete = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Delete Book'),
+          content: const Text('Are you sure you want to delete this book? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false), // Tutup dialog, tidak jadi delete
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true), // Konfirmasi delete
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        ),
+      );
+    if (confirmDelete == true) {
+      try {
+        await _firestoreService.deleteBook(widget.book.id);
+        
+        setState(() {
+          bookList.remove(widget.book); // Menghapus buku dari daftar
+        });
 
-    Navigator.pop(context); // Menutup halaman
-    showSnackBar(context, 'Book deleted from your list.');
+        Navigator.pop(context); // Menutup halaman
+        showSnackBar(context, 'Book deleted from your list.');
+      } catch(e){
+          // Tangani error
+          showSnackBar(context, 'Failed to update progress: $e');
+      }
+    }
+
+
   }
 
   void showSnackBar(BuildContext context, String message) {

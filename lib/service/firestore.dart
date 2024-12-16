@@ -37,6 +37,7 @@ class FirestoreService {
             final data = doc.data() as Map<String, dynamic>; // Ambil data dari dokumen
 
             return Book(
+              id: doc.reference.id,
               title: data['title'],
               types: Types.values.firstWhere((e) => e.toString() == 'Types.${data['types']}'),
               pages: data['pages'],
