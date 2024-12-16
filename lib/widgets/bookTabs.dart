@@ -9,28 +9,39 @@ class BookTabs extends StatefulWidget {
 }
 
 class _BookTabsState extends State<BookTabs> {
-  int _currentIndex = 0;
+  int _selectedIndex = 0;
 
-  // Daftar halaman untuk setiap tab
-  final List<Widget> _pages = [
-    BookListPage(isCompleted: null), // Home
-    BookListPage(isCompleted: false), // Currently Reading
-    BookListPage(isCompleted: true), // Completed
-  ];
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _pages = [
+      BookListPage(
+        onTabSelected: (int index) {
+          setState(() {
+            _selectedIndex = index; // Update tab index dari tombol "Show More"
+          });
+        },
+      ),
+      BookListPage(isCompleted: false), // Currently Reading
+      BookListPage(isCompleted: true),  // Completed Books
+    ];
+
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 120.0, // Tinggi AppBar untuk menyesuaikan dengan gaya sebelumnya
+        toolbarHeight: 150.0, 
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             color: Color(0xFFF0F4FF), // Warna latar belakang yang sama
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-          alignment: Alignment.bottomLeft, // Untuk menempatkan teks di kiri bawah
+          alignment: Alignment.bottomLeft, 
           child: const Text(
-            'Welcome User', // Teks yang sama seperti di `BookListPage`
+            'Welcome, User', 
             style: TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
@@ -39,31 +50,26 @@ class _BookTabsState extends State<BookTabs> {
           ),
         ),
       ),
-      drawer: BookDrawer(), // Tetap gunakan drawer
-      body: _pages[_currentIndex], // Menampilkan halaman sesuai tab aktif
+      drawer: BookDrawer(),
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        selectedItemColor: const Color.fromARGB(255, 0, 81, 255),
-        unselectedItemColor: Colors.grey,
-        items: const [
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.book),
+            icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.circleCheck),
+            icon: Icon(Icons.book),
             label: 'Currently Reading',
           ),
           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.star),
+            icon: Icon(Icons.check_circle),
             label: 'Completed',
           ),
         ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blue,
+        onTap: _onItemTapped,
       ),
     );
   }
