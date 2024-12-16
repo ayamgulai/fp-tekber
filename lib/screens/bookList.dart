@@ -7,8 +7,9 @@ import 'package:fp_tekber/screens/bookDetails.dart';
 
 class BookListPage extends StatelessWidget {
   final bool? isCompleted; // Null jika dipanggil dari Home
+  final void Function(int)? onTabSelected; // Callback untuk mengatur tab aktif
 
-  BookListPage({this.isCompleted});
+  BookListPage({this.isCompleted, this.onTabSelected});
   final FirestoreService _firestoreService = FirestoreService();
   @override
   Widget build(BuildContext context) {
@@ -29,9 +30,9 @@ class BookListPage extends StatelessWidget {
         ? books // Untuk Home, tampilkan semua buku
         : books.where((book) => book.isCompleted == isCompleted).toList();
 
-    // Logika untuk Home
+    
     if (isCompleted == null) {
-      // Tetap gunakan tampilan kombinasi GridView dan ListView di Home
+      
       final readingBooks = books
           .where((book) => book.isCompleted == false)
           .take(3)
@@ -56,7 +57,7 @@ class BookListPage extends StatelessWidget {
             mainAxisSpacing: 16.0,
             childAspectRatio: 1.5 / 1,
           ),
-          itemCount: readingBooks.length + 1, // Tambahkan grid untuk tombol
+          itemCount: readingBooks.length + 1, 
           itemBuilder: (context, index) {
             if (index < readingBooks.length) {
               final book = readingBooks[index];
@@ -116,7 +117,8 @@ class BookListPage extends StatelessWidget {
             } else {
               // Grid untuk tombol aksi dengan Card yang transparan
               return Card(
-                color: const Color.fromARGB(255, 255, 255, 255),
+                color: Colors.transparent,
+                elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
@@ -153,7 +155,7 @@ class BookListPage extends StatelessWidget {
                     // Tombol "Show More" dengan ikon panah ke kanan
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/someOtherAction');
+                         if (onTabSelected != null) onTabSelected!(1);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Warna latar belakang putih
@@ -239,7 +241,7 @@ class BookListPage extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/showMoreCompleted');
+                if (onTabSelected != null) onTabSelected!(2);
               },
               style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Warna latar belakang putih
