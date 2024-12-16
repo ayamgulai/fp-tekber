@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../data/user_repository.dart'; // Import UserRepository
+import 'package:fp_tekber/screens/profile.dart';
+import 'package:fp_tekber/screens/regPage.dart';
+import 'package:fp_tekber/service/firestore.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -11,35 +13,35 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _repository = UserRepository(
-      baseUrl:
-          'https://example.com/api'); // URL backend (ubah sesuai kebutuhan)
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+  final _formKey = GlobalKey<FormState>();
+  final FirestoreService _firestoreService = FirestoreService();
 
   Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final success = await _repository.loginUser(
-        _usernameController.text,
-        _passwordController.text,
-      );
+      final email = _usernameController.text.trim();
+      final password = _passwordController.text;
 
-      if (success) {
+      try {
+        final userData = await _firestoreService.getAccountInfo(email);
+
+        if (userData != null && userData['password'] == password) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Login berhasil!')),
+          );
+
+          // Navigasi ke Profile Page
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ProfilePage()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Email atau password salah')),
+          );
+        }
+      } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login berhasil!')),
-        );
-        // Navigasi ke halaman berikutnya
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Login gagal. Periksa kembali kredensial Anda!')),
+          SnackBar(content: Text('Login gagal: $e')),
         );
       }
     }
@@ -70,16 +72,12 @@ class _LoginPageState extends State<LoginPage> {
                     TextFormField(
                       controller: _usernameController,
                       decoration: const InputDecoration(
-                        labelText: 'Nama Pengguna',
-                        hintText: 'Masukkan nama pengguna disini',
+                        labelText: 'Email',
+                        hintText: 'Masukkan email anda disini',
                         border: OutlineInputBorder(),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Nama pengguna tidak boleh kosong';
-                        }
-                        return null;
-                      },
+                      validator: (value) =>
+                          value!.isEmpty ? 'Email tidak boleh kosong' : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -90,15 +88,8 @@ class _LoginPageState extends State<LoginPage> {
                         hintText: 'Masukkan password anda disini',
                         border: OutlineInputBorder(),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Password tidak boleh kosong';
-                        }
-                        if (value.length < 6) {
-                          return 'Password harus lebih dari 6 karakter';
-                        }
-                        return null;
-                      },
+                      validator: (value) =>
+                          value!.isEmpty ? 'Password tidak boleh kosong' : null,
                     ),
                     const SizedBox(height: 32),
                     ElevatedButton(
@@ -107,6 +98,28 @@ class _LoginPageState extends State<LoginPage> {
                         minimumSize: const Size(double.infinity, 50),
                       ),
                       child: const Text('Login'),
+                    ),
+                    const SizedBox(height: 16),
+                    // Tambahkan teks "Belum punya akun? Daftar disini"
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Belum punya akun? "),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RegistrationPage(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            "Daftar disini",
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

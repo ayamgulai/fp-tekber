@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../data/user_repository.dart'; // Import UserRepository
-import '../models/user.dart'; // Import model User
+import 'package:fp_tekber/screens/loginPage.dart';
+import 'package:fp_tekber/service/firestore.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({Key? key}) : super(key: key);
@@ -13,11 +13,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _repository = UserRepository(
-      baseUrl:
-          'https://example.com/api'); // URL backend (ubah sesuai kebutuhan)
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
+  final FirestoreService _firestoreService = FirestoreService();
 
   @override
   void dispose() {
@@ -29,20 +26,24 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   Future<void> _register() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final user = User(
-        username: _usernameController.text,
-        password: _passwordController.text,
-      );
+      final email = _usernameController.text.trim();
+      final password = _passwordController.text;
 
-      final success = await _repository.registerUser(user);
-      if (success) {
+      try {
+        // Tambahkan akun ke Firestore
+        await _firestoreService.addAccount(email, password);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registrasi berhasil!')),
+          const SnackBar(content: Text('Registrasi berhasil! Silakan login.')),
         );
-        Navigator.pop(context); // Kembali ke Login Page
-      } else {
+
+        // Navigasi ke Login Page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+        );
+      } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registrasi gagal.')),
+          SnackBar(content: Text('Registrasi gagal: $e')),
         );
       }
     }
@@ -58,12 +59,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'myBook',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueGrey,
-                ),
+                'Registrasi Akun',
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 32),
               Container(
@@ -73,16 +70,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     TextFormField(
                       controller: _usernameController,
                       decoration: const InputDecoration(
-                        labelText: 'Nama Pengguna',
-                        hintText: 'Masukkan nama pengguna disini',
+                        labelText: 'Email',
                         border: OutlineInputBorder(),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Nama pengguna tidak boleh kosong';
-                        }
-                        return null;
-                      },
+                      validator: (value) =>
+                          value!.isEmpty ? 'Email tidak boleh kosong' : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -90,18 +82,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       obscureText: true,
                       decoration: const InputDecoration(
                         labelText: 'Password',
-                        hintText: 'Masukkan password anda disini',
                         border: OutlineInputBorder(),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Password tidak boleh kosong';
-                        }
-                        if (value.length < 6) {
-                          return 'Password harus lebih dari 6 karakter';
-                        }
-                        return null;
-                      },
+                      validator: (value) => value!.length < 6
+                          ? 'Password minimal 6 karakter'
+                          : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -109,22 +94,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       obscureText: true,
                       decoration: const InputDecoration(
                         labelText: 'Konfirmasi Password',
-                        hintText: 'Konfirmasi password anda disini',
                         border: OutlineInputBorder(),
                       ),
-                      validator: (value) {
-                        if (value != _passwordController.text) {
-                          return 'Password tidak cocok';
-                        }
-                        return null;
-                      },
+                      validator: (value) => value != _passwordController.text
+                          ? 'Password tidak cocok'
+                          : null,
                     ),
                     const SizedBox(height: 32),
                     ElevatedButton(
                       onPressed: _register,
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 50),
-                      ),
                       child: const Text('Daftar'),
                     ),
                   ],
