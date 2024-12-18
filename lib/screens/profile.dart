@@ -4,6 +4,8 @@ import 'formEditProfile.dart';
 import 'loginPage.dart'; // Import LoginPage
 
 class ProfilePage extends StatefulWidget {
+  final String email;
+  const ProfilePage({Key? key, required this.email}) : super(key: key);
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -21,7 +23,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    _loadProfile(); // Memuat data profil dari backend
+    _email = widget.email; // Ambil email dari parameter
+    _loadProfile();
   }
 
   Future<void> _loadProfile() async {
