@@ -32,7 +32,9 @@ class _LoginPageState extends State<LoginPage> {
           // Navigasi ke Profile Page
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => ProfilePage()),
+            MaterialPageRoute(
+              builder: (context) => ProfilePage(email: email),
+            ),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(

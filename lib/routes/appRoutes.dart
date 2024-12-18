@@ -12,35 +12,40 @@ class AppRoutes {
   static const FormAddBook = '/addBook';
   static const Profile = '/profile';
   static const About = '/aboutUs';
-  
 
-
-    static Route<dynamic> generateRoute(RouteSettings settings) {
+  static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       // ignore: pattern_never_matches_value_type
       case Home:
-      final isCompleted = settings.arguments as bool;
-      return MaterialPageRoute(builder: (_) => BookListPage(isCompleted: isCompleted)
-      );
+        final isCompleted = settings.arguments as bool;
+        return MaterialPageRoute(
+            builder: (_) => BookListPage(isCompleted: isCompleted));
 
       case BookDetail:
-      final book = settings.arguments as Book;
-      final bookList = settings.arguments as List<Book>; // Assuming you have bookList in the arguments
-      return MaterialPageRoute(builder: (_) => BookDetailPage(book: book, bookList: bookList));
+        final book = settings.arguments as Book;
+        final bookList = settings.arguments
+            as List<Book>; // Assuming you have bookList in the arguments
+        return MaterialPageRoute(
+            builder: (_) => BookDetailPage(book: book, bookList: bookList));
 
       case Profile:
-      return MaterialPageRoute(builder: (_) => ProfilePage());
+        return MaterialPageRoute(
+            builder: (_) => ProfilePage(
+                  email: '',
+                ));
 
       case FormAddBook:
-      return MaterialPageRoute(builder: (_) => FormAddBookPage());
+        return MaterialPageRoute(builder: (_) => FormAddBookPage());
 
       case About:
-      return MaterialPageRoute(builder: (_) => AboutPage());
+        return MaterialPageRoute(builder: (_) => AboutPage());
       default:
-      return MaterialPageRoute(builder: (_) => const Scaffold(
-        body: Center(child: Text('No Route defined'),),
-      ));
+        return MaterialPageRoute(
+            builder: (_) => const Scaffold(
+                  body: Center(
+                    child: Text('No Route defined'),
+                  ),
+                ));
     }
   }
-
 }
