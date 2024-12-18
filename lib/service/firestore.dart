@@ -33,6 +33,7 @@ class FirestoreService {
   // READ
   Stream<List<Book>> getBooks() {
     return books // Nama koleksi di Firestore
+        .orderBy('dateAdded', descending: true)
         .snapshots() // Stream<QuerySnapshot>
         .map((querySnapshot) {
       return querySnapshot.docs.map((doc) {
