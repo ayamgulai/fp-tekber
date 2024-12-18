@@ -39,6 +39,13 @@ class BookDrawer extends StatelessWidget {
             },
           ),
           // Add more list tiles as needed
+          ListTile(
+            leading: Icon(Icons.book),
+            title: Text('About Us'),
+            onTap: () {
+              Navigator.pushNamed(context, '/aboutUs');
+            },
+          ),
         ],
       ),
     );
